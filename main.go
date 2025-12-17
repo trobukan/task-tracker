@@ -47,19 +47,26 @@ func main() {
 	}
 
 	arguments := os.Args
-	comands := arguments[1]
 
 	if len(arguments) == 1 {
 		return
 	}
 
+	comands := arguments[1]
+
+	tasks := []Task{}
+	if err := loadTasks(&tasks); err != nil {
+		log.Fatal(err)
+	}
 	switch comands {
 	case "add":
-		handleAdd(arguments)
+		handleAdd(arguments, tasks)
+	case "list":
+		handleList(arguments, tasks)
 	}
 }
 
-func handleAdd(arguments []string) {
+func handleAdd(arguments []string, tasks []Task) {
 	if len(arguments) < 3 {
 		fmt.Println("add <title> [description]")
 		return
@@ -73,10 +80,8 @@ func handleAdd(arguments []string) {
 		description = "(none)"
 	}
 
-	taskId, _ := uuid.NewRandom()
-
-	tasks := []Task{}
-	if err := loadTasks(&tasks); err != nil {
+	taskId, err := uuid.NewRandom()
+	if err != nil {
 		log.Fatal(err)
 	}
 
@@ -105,6 +110,37 @@ func checkFile(filename string) error {
 		}
 	}
 	return nil
+}
+
+func handleList(arguments []string, tasks []Task) {
+	timeFormat := "jan _2 15:04:05 2006"
+	filterByStatus := len(arguments) > 2
+	var status TaskStatus
+
+	if filterByStatus {
+		switch arguments[2] {
+		case "todo":
+			status = TaskTodo
+		case "in-progress":
+			status = TaskProgress
+		case "done":
+			status = TaskDone
+		default:
+			filterByStatus = false
+		}
+	}
+
+	for i, task := range tasks {
+		if !filterByStatus || status == task.Status {
+			fmt.Printf("List. %v\nDescription: %v\nStatus: %v\nCreated At: %v\nUpdate At: %v\n", i+1,
+				task.Description,
+				task.Status,
+				task.CreatedAt.Format(timeFormat),
+				task.UpdatedAt.Format(timeFormat))
+
+			fmt.Println()
+		}
+	}
 }
 
 func loadTasks(tasks *[]Task) error {
