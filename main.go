@@ -13,12 +13,14 @@ import (
 
 type TaskStatus int
 
+// Task Status Enum
 const (
 	TaskTodo = iota
 	TaskProgress
 	TaskDone
 )
 
+// When printing it returns a text
 func (t TaskStatus) String() string {
 	switch t {
 	case TaskTodo:
@@ -50,6 +52,7 @@ func main() {
 	arguments := os.Args
 
 	if len(arguments) == 1 {
+		fmt.Println("> Commands List\nadd\nlist\nupdate\ndelete\nmark-in-progress\nmark-done\nmark-todo")
 		return
 	}
 
@@ -138,7 +141,10 @@ func handleUpdate(arguments []string, tasks []Task) {
 
 	tasks[taskIndex].UpdatedAt = time.Now()
 	tasks[taskIndex].Description = newDescription
-	saveTasks(tasks)
+
+	if err := saveTasks(tasks); err != nil {
+		log.Fatal(err)
+	}
 
 	fmt.Println("Task updated")
 }
