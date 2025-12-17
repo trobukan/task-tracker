@@ -1,6 +1,9 @@
 package main
 
-import "time"
+import (
+	"os"
+	"time"
+)
 
 type TaskStatus int
 
@@ -29,4 +32,21 @@ type Task struct {
 	Status      TaskStatus `json:"status"`
 	CreatedAt   time.Time  `json:"createdAt"`
 	UpdatedAt   time.Time  `json:"UpdatedAt"`
+}
+
+var filename = "todolist.json"
+
+func main() {
+	checkFile(filename)
+}
+
+func checkFile(filename string) error {
+	_, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		_, err := os.Create(filename)
+		if err != nil {
+			return nil
+		}
+	}
+	return nil
 }
