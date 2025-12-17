@@ -66,6 +66,8 @@ func main() {
 		handleList(arguments, tasks)
 	case "update":
 		handleUpdate(arguments, tasks)
+	case "delete":
+		handleDelete(arguments, tasks)
 	case "mark-in-progress":
 		markAsInProgress(arguments, tasks)
 	case "mark-done":
@@ -201,6 +203,28 @@ func markAsTodo(arguments []string, tasks []Task) {
 
 	taskIndex -= 1
 	tasks[taskIndex].Status = TaskTodo
+
+	if err := saveTasks(tasks); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func handleDelete(arguments []string, tasks []Task) {
+	if len(arguments) < 3 {
+		log.Fatal("Task missing")
+	}
+
+	taskIndex, err := strconv.Atoi(arguments[2])
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if taskIndex < 1 || taskIndex > len(tasks) {
+		log.Fatal("This task doesn't exist")
+	}
+
+	taskIndex -= 1
+	tasks = append(tasks[:taskIndex], tasks[taskIndex+1:]...)
 
 	if err := saveTasks(tasks); err != nil {
 		log.Fatal(err)
