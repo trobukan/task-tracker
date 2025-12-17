@@ -1,4 +1,4 @@
-# Todo List
+# Task Tracker CLI
 
 A commend-line interface application built in Go for managing a personal todo list.
 The application persists in a JSON file and allows for creating, updating, deleting and
