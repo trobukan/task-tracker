@@ -9,7 +9,7 @@ filtering tasks.
 1. Clone the repository:
 
 ```sh
-git clone git@github.com:trobukan/gotodolist.git
+git clone git@github.com:trobukan/task-tracker
 ```
 
 2. Install dependencies

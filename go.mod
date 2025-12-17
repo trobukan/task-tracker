@@ -1,4 +1,4 @@
-module github.com/trobukan/gotodolist
+module github.com/trobukan/task-tracker
 
 go 1.25.5
 
