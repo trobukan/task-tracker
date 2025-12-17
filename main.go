@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/google/uuid"
@@ -63,22 +64,17 @@ func main() {
 		handleAdd(arguments, tasks)
 	case "list":
 		handleList(arguments, tasks)
+	case "update":
+		handleUpdate(arguments, tasks)
 	}
 }
 
 func handleAdd(arguments []string, tasks []Task) {
-	if len(arguments) < 3 {
-		fmt.Println("add <title> [description]")
-		return
+	if len(arguments) < 2 {
+		log.Fatal("Missing Description")
 	}
 
-	var description string
-
-	if len(arguments) > 3 {
-		description = arguments[3]
-	} else {
-		description = "(none)"
-	}
+	description := arguments[2]
 
 	taskId, err := uuid.NewRandom()
 	if err != nil {
@@ -110,6 +106,19 @@ func checkFile(filename string) error {
 		}
 	}
 	return nil
+}
+
+func handleUpdate(arguments []string, tasks []Task) {
+	taskIndex, err := strconv.Atoi(arguments[2])
+	newDescription := arguments[3]
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	taskIndex -= 1
+
+	tasks[taskIndex].Description = newDescription
+	saveTasks(tasks)
 }
 
 func handleList(arguments []string, tasks []Task) {
