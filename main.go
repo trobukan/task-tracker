@@ -66,6 +66,12 @@ func main() {
 		handleList(arguments, tasks)
 	case "update":
 		handleUpdate(arguments, tasks)
+	case "mark-in-progress":
+		markAsInProgress(arguments, tasks)
+	case "mark-done":
+		markAsDone(arguments, tasks)
+	case "mark-todo":
+		markAsTodo(arguments, tasks)
 	}
 }
 
@@ -133,6 +139,72 @@ func handleUpdate(arguments []string, tasks []Task) {
 	saveTasks(tasks)
 
 	fmt.Println("Task updated")
+}
+
+func markAsDone(arguments []string, tasks []Task) {
+	if len(arguments) < 3 {
+		log.Fatal("Task missing")
+	}
+
+	taskIndex, err := strconv.Atoi(arguments[2])
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if taskIndex < 1 || taskIndex > len(tasks) {
+		log.Fatal("This task doesn't exist")
+	}
+
+	taskIndex -= 1
+	tasks[taskIndex].Status = TaskDone
+
+	if err := saveTasks(tasks); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func markAsInProgress(arguments []string, tasks []Task) {
+	if len(arguments) < 3 {
+		log.Fatal("Task missing")
+	}
+
+	taskIndex, err := strconv.Atoi(arguments[2])
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if taskIndex < 1 || taskIndex > len(tasks) {
+		log.Fatal("This task doesn't exist")
+	}
+
+	taskIndex -= 1
+	tasks[taskIndex].Status = TaskProgress
+
+	if err := saveTasks(tasks); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func markAsTodo(arguments []string, tasks []Task) {
+	if len(arguments) < 3 {
+		log.Fatal("Task missing")
+	}
+
+	taskIndex, err := strconv.Atoi(arguments[2])
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if taskIndex < 1 || taskIndex > len(tasks) {
+		log.Fatal("This task doesn't exist")
+	}
+
+	taskIndex -= 1
+	tasks[taskIndex].Status = TaskTodo
+
+	if err := saveTasks(tasks); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func handleList(arguments []string, tasks []Task) {
