@@ -70,10 +70,9 @@ func main() {
 }
 
 func handleAdd(arguments []string, tasks []Task) {
-	if len(arguments) < 2 {
-		log.Fatal("Missing Description")
+	if len(arguments) < 3 {
+		log.Fatal("\nMissing Description\nadd <Description>")
 	}
-
 	description := arguments[2]
 
 	taskId, err := uuid.NewRandom()
@@ -94,7 +93,7 @@ func handleAdd(arguments []string, tasks []Task) {
 		log.Fatal(err)
 	}
 
-	fmt.Println("List added")
+	fmt.Printf("Task %v added", len(tasks)+1)
 }
 
 func checkFile(filename string) error {
