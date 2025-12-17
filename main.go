@@ -71,7 +71,7 @@ func main() {
 
 func handleAdd(arguments []string, tasks []Task) {
 	if len(arguments) < 3 {
-		log.Fatal("\nMissing Description\nadd <Description>")
+		log.Fatal("Missing Description\nadd <Description>")
 	}
 	description := arguments[2]
 
@@ -93,7 +93,7 @@ func handleAdd(arguments []string, tasks []Task) {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("Task %v added", len(tasks)+1)
+	fmt.Printf("Task %v added\n", len(tasks)+1)
 }
 
 func checkFile(filename string) error {
@@ -108,16 +108,31 @@ func checkFile(filename string) error {
 }
 
 func handleUpdate(arguments []string, tasks []Task) {
-	taskIndex, err := strconv.Atoi(arguments[2])
-	newDescription := arguments[3]
+	if len(arguments) < 3 {
+		log.Fatal("Task missing")
+	}
 
+	taskIndex, err := strconv.Atoi(arguments[2])
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	if taskIndex < 1 || taskIndex > len(tasks) {
+		log.Fatal("This task doesn't exist")
+	}
+
+	if len(arguments) < 4 {
+		log.Fatal("New description is missing")
+	}
+
+	newDescription := arguments[3]
 	taskIndex -= 1
 
+	tasks[taskIndex].UpdatedAt = time.Now()
 	tasks[taskIndex].Description = newDescription
 	saveTasks(tasks)
+
+	fmt.Println("Task updated")
 }
 
 func handleList(arguments []string, tasks []Task) {
